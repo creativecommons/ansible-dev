@@ -42,7 +42,7 @@ See [Create Local Ansible Dev Environment Using Docker](https://opensource.creat
 - [FrontPage - Debian Wiki](https://wiki.debian.org/FrontPage)
 - [Docker Docs](https://docs.docker.com/)
 - [creativecommons/sre-salt-prime](https://github.com/creativecommons/sre-salt-prime): Site Reliability Engineering / DevOps SaltStack configuration files
-- [creativecommons/index-dev-env](https://github.com/creativecommons/index-dev-env): Local development environment for CreativeCommons.org (product name: index)
+- [creativecommons/index-dev-env](https://github.com/creativecommons/index-dev-env): Local development environment for CreativeCommons.org (reference for docker project)
 
 
 ## License
