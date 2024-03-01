@@ -1,0 +1,91 @@
+# https://github.com/docker/compose/issues/4513#issuecomment-281478365
+# >> Are we just expected to stay on [Docker Compose file format version 2] if
+# >> we want to use docker-compose and not swarm mode?
+# >
+# > Yes.
+#
+# https://docs.docker.com/compose/compose-file/compose-file-v2/
+version: '2.4'
+
+services:
+
+  index-web:
+    container_name: index-web
+    depends_on:
+      - index-db
+    build: .
+    networks:
+      - index-backend
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      PMA_HOST: index-db
+      PMA_PORT: 3306
+      WORDPRESS_CONFIG_EXTRA: |
+        # Use dispatch port by default
+        if ('${CODESPACE_NAME:-}') {
+          define('WP_HOME', 'https://${CODESPACE_NAME:-}-8080.${GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN:-}');
+        } else {
+          define('WP_HOME', 'http://localhost:8080');
+          define('WP_SITEURL', 'http://localhost:8080');
+        }
+      WORDPRESS_DB_HOST: index-db:3306
+      WORDPRESS_DB_PASSWORD: root
+      WORDPRESS_DB_USER: root
+      WORDPRESS_DB_name: wordpress
+      WORDPRESS_USER: root
+    init: true
+    ports:
+      - '8080:80'
+    restart: on-failure
+    volumes:
+      # Apache2 web server configuration
+      - ./config/web-sites-available:/etc/apache2/sites-available:ro
+      # CC Legal Tools
+      # - (assumes the cc-legal-tools-data repository has been cloned next to
+      #   this repository)
+      - ../cc-legal-tools-data:/var/www/git/cc-legal-tools-data:ro
+      # Chooser
+      # - (assumes the chooser repository has been cloned next to this
+      #   repository) this repository)
+      - ../chooser:/var/www/git/chooser:ro
+      # FAQ
+      # - (assumes the faq repository has been cloned next to this repository)
+      #   this repository)
+      - ../faq:/var/www/git/faq:ro
+      # Platform Toolkit
+      # - (assumes the mp repository has been cloned next to this repository)
+      #   this repository)
+      - ../mp:/var/www/git/mp:ro
+      # WordPress
+      - index-wp-data:/var/www/index
+      # Migration cache
+      - ./cache:/var/www/index/cache:ro
+      # Composer files
+      - ./config/composer/composer.json:/var/www/index/composer.json
+      - ./config/composer/composer.lock:/var/www/index/composer.lock
+
+
+  index-db:
+    container_name: index-db
+    environment:
+      MYSQL_DATABASE: wordpress
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: root
+    # https://hub.docker.com/_/mariadb
+    image: mariadb
+    networks:
+      - index-backend
+    restart: on-failure
+    volumes:
+      - index-db-data:/var/lib/mysql
+
+volumes:
+  index-db-data:
+    name: index-db-data
+  index-wp-data:
+    name: index-wp-data
+
+networks:
+  index-backend:
+    name: index-backend
+
