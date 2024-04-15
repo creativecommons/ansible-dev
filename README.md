@@ -42,7 +42,7 @@ graph LR
     H -.->|secure access| B
     H -.->|secure access| C
     H -.->|secure access| D
-
+```
 
 See [Create Local Ansible Dev Environment Using Docker](https://opensource.creativecommons.org/programs/project-ideas/#ansible-dev-env) for more details.
 
