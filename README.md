@@ -32,13 +32,13 @@ Docker containers:
 
 ```mermaid
 graph LR
-    A[Ansible server] -->|manages| B[webserver 1 (Apache2/Wordpress)]
-    A -->|manages| C[webserver 2 (nginx)]
-    A -->|manages| D[webserver n]
-    B --> E[Database server 1]
-    C --> F[Database server 2]
-    D --> G[Database server n]
-    H[Bastion server] -.->|secure access| A
+    A["Ansible server"] -->|manages| B["webserver 1 (Apache2/Wordpress)"]
+    A -->|manages| C["webserver 2 (nginx)"]
+    A -->|manages| D["webserver n"]
+    B --> E["Database server 1"]
+    C --> F["Database server 2"]
+    D --> G["Database server n"]
+    H["Bastion server"] -.->|secure access| A
     H -.->|secure access| B
     H -.->|secure access| C
     H -.->|secure access| D
