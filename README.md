@@ -31,7 +31,18 @@ Docker containers:
 - Database server (MariaDB)
 
 
-![image](https://github.com/creativecommons/ansible-dev/assets/90766122/21baa18d-715e-4908-9620-15c768994011)
+graph LR
+    A[Ansible server] -->|manages| B[webserver 1 (Apache2/Wordpress)]
+    A -->|manages| C[webserver 2 (nginx)]
+    A -->|manages| D[webserver n]
+    B --> E[Database server 1]
+    C --> F[Database server 2]
+    D --> G[Database server n]
+
+    H[Bastion server] -.->|secure access| A
+    H -.->|secure access| B
+    H -.->|secure access| C
+    H -.->|secure access| D
 
 
 See [Create Local Ansible Dev Environment Using Docker](https://opensource.creativecommons.org/programs/project-ideas/#ansible-dev-env) for more details.
