@@ -1,0 +1,13 @@
+# https://docs.docker.com/compose/compose-file/
+
+services:
+
+  ansible-dev:
+    container_name: ansible
+    build:
+      context: .
+      dockerfile: ansible/Dockerfile
+    volumes:
+      - ./config/ansible.cfg:/etc/ansible/ansible.cfg
+      - ./config/hosts:/etc/ansible/hosts
+    command: sh -c 'trap "exit" TERM; while true; do sleep 1; done'
