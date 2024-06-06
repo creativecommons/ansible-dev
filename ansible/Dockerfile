@@ -19,7 +19,7 @@ RUN apt-get update
 RUN apt-get install -y \
     python3 \
     python3-pip \
-    python3-virtualenv \
+    python3-venv \
     openssh-client 
 
 # Clean up packages: Saves space by removing unnecessary package files
@@ -27,20 +27,15 @@ RUN apt-get install -y \
 RUN apt-get clean
 RUN rm -rf /var/lib/apt/lists/*
 
-# Create a virtual env
-RUN python3 -m virtualenv /ansible-venv
-
-# Activate virtual environment and install ansible using pip
-RUN /ansible-venv/bin/pip install ansible
+# Create a virtual env and install ansible using pip
+RUN python3 -m venv /opt/ansible-venv --system-site-packages && \    
+/opt/ansible-venv/bin/pip install --no-cache-dir ansible
 
 # Create a directory for Ansible configuration
 RUN mkdir /etc/ansible/
 
-# Copy local Ansible configuration file to the image
-COPY config/ansible.cfg /etc/ansible/ansible.cfg
-
-# Copy local inventory file
-COPY config/hosts /etc/ansible/hosts
+# Copy local configuration files to the image
+COPY ../config/ /etc/ansible/
 
 # Set environment variables for Ansible
 ENV PATH="/ansible-venv/bin:$PATH"
