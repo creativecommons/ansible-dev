@@ -1,9 +1,6 @@
-# https://docs.docker.com/compose/compose-file/
-
 services:
-
   ansible-dev:
-    container_name: ansible
+    container_name: ansible-dev
     build:
       context: .
       dockerfile: ansible/Dockerfile
@@ -11,3 +8,71 @@ services:
       - ./config/ansible.cfg:/etc/ansible/ansible.cfg
       - ./config/hosts:/etc/ansible/hosts
     command: sh -c 'trap "exit" TERM; while true; do sleep 1; done'
+
+  index-web:
+    container_name: index-web
+    build:
+      context: .
+      dockerfile: web/Dockerfile
+      args:
+        WP_VERSION: ${WP_VERSION}
+    networks:
+      - index-backend
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      PMA_HOST: index-db
+      PMA_PORT: 3306
+      WORDPRESS_CONFIG_EXTRA: |
+        # Use dispatch port by default
+        if ('${CODESPACE_NAME:-}') {
+          define('WP_HOME', 'https://${CODESPACE_NAME:-}-8080.${GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN:-}');
+        } else {
+          define('WP_HOME', 'http://localhost:8080');
+          define('WP_SITEURL', 'http://localhost:8080');
+        }
+      WORDPRESS_DB_HOST: index-db:3306
+      WORDPRESS_DB_PASSWORD: root
+      WORDPRESS_DB_USER: root
+      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_USER: root
+    init: true
+    ports:
+      - '8080:80'
+    restart: on-failure
+    volumes:
+      # Apache2 web server configuration
+      - ./config/web-sites-available:/etc/apache2/sites-available:ro
+      # WordPress
+      - index-wp-data:/var/www/index
+      # Migration cache
+      - ./cache:/var/www/index/cache:ro
+      # Composer files
+      - ./config/composer/composer.json:/var/www/index/composer.json
+      - ./config/composer/composer.lock:/var/www/index/composer.lock
+
+  index-db:
+    container_name: index-db
+    build:
+      context: .
+      dockerfile: ansible/Dockerfile
+    environment:
+      MYSQL_DATABASE: wordpress
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: root
+    # https://hub.docker.com/_/mariadb
+    image: mariadb
+    networks:
+      - index-backend
+    restart: on-failure
+    volumes:
+      - index-db-data:/var/lib/mysql
+
+volumes:
+  index-db-data:
+    name: index-db-data
+  index-wp-data:
+    name: index-wp-data
+
+networks:
+  index-backend:
+    name: index-backend
