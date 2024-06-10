@@ -1,13 +1,79 @@
-# https://docs.docker.com/compose/compose-file/
+version: '3.4'
 
 services:
-
   ansible-dev:
-    container_name: ansible
+    container_name: ansible-dev
     build:
       context: .
       dockerfile: ansible/Dockerfile
+    networks:
+      - dev-backend
     volumes:
-      - ./config/ansible.cfg:/etc/ansible/ansible.cfg
-      - ./config/hosts:/etc/ansible/hosts
+      - ./ansible/etc-ansible-config:/etc/ansible/
     command: sh -c 'trap "exit" TERM; while true; do sleep 1; done'
+
+  web-dev:
+    container_name: web-dev
+    depends_on:
+      - db-dev
+    build:
+      args:
+        WP_VERSION: ${WP_VERSION}
+      context: .
+      dockerfile: web/Dockerfile
+    networks:
+      - dev-backend
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      PMA_HOST: db-dev
+      PMA_PORT: 3306
+      WORDPRESS_CONFIG_EXTRA: |
+        # Use dispatch port by default
+        if ('${CODESPACE_NAME:-}') {
+          define('WP_HOME', 'https://${CODESPACE_NAME:-}-8080.${GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN:-}');
+        } else {
+          define('WP_HOME', 'http://localhost:8080');
+          define('WP_SITEURL', 'http://localhost:8080');
+        }
+      WORDPRESS_DB_HOST: db-dev:3306
+      WORDPRESS_DB_PASSWORD: root
+      WORDPRESS_DB_USER: root
+      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_USER: root
+    init: true
+    ports:
+      - '8080:80'
+    restart: on-failure
+    volumes:
+      - ./web/config-web/etc-apache2-sites-available-index:/etc/apache2/sites-available:ro
+      - ../cc-legal-tools-data:/var/www/git/cc-legal-tools-data:ro
+      - ../chooser:/var/www/git/chooser:ro
+      - ../faq:/var/www/git/faq:ro
+      - ../mp:/var/www/git/mp:ro
+      - wp-data:/var/www/index
+      - ./cache:/var/www/index/cache:ro
+      - ./web/config-web/var-www-index-composer/composer.json:/var/www/index/composer.json
+      - ./web/config-web/var-www-index-composer/composer.lock:/var/www/index/composer.lock
+
+  db-dev:
+    container_name: db-dev
+    environment:
+      MYSQL_DATABASE: wordpress
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: root
+    image: mariadb
+    networks:
+      - dev-backend
+    restart: on-failure
+    volumes:
+      - db-data:/var/lib/mysql
+
+volumes:
+  db-data:
+    name: db-data
+  wp-data:
+    name: wp-data
+
+networks:
+  dev-backend:
+    name: dev-backend
