@@ -13,7 +13,7 @@ RUN apt-config dump \
     | sed -e's/1/0/' \
     | tee /etc/apt/apt.conf.d/99no-recommends-no-suggests
 
-# Resynchronize the package index files from their sources
+# Resynchronize the package dev files from their sources
 RUN apt-get update
 
 # Install packages
@@ -78,14 +78,14 @@ RUN mkdir /var/www/.wp-cli
 RUN chown -R www-data:www-data /var/www/.wp-cli
 
 
-# Create the index directory and set permissions
-RUN mkdir -p /var/www/index/wp-content/uploads
-RUN chown -R www-data:www-data /var/www/index
+# Create the dev directory and set permissions
+RUN mkdir -p /var/www/dev/wp-content/uploads
+RUN chown -R www-data:www-data /var/www/dev
 
 
 # Use WP-CLI to intall WordPress
 USER www-data
-WORKDIR /var/www/index
+WORKDIR /var/www/dev
 ARG WP_VERSION
 RUN wp core download --version=$WP_VERSION
 
@@ -94,7 +94,7 @@ RUN wp core download --version=$WP_VERSION
 # https://github.com/docker-library/wordpress/blob/master/latest/php8.2/apache/wp-config-docker.php
 RUN curl -L \
     https://raw.githubusercontent.com/docker-library/wordpress/master/latest/php8.2/apache/wp-config-docker.php \
-    -o /var/www/index/wp-config.php
+    -o /var/www/dev/wp-config.php
 
 
 # 2) Use awk to replace all instances of "put your unique phrase here" with a
@@ -110,5 +110,5 @@ RUN awk ' \
         gsub("put your unique phrase here", str); \
     } \
     { print } \
-    ' /var/www/index/wp-config.php > /var/www/index/wp-config.tmp \
-    && mv /var/www/index/wp-config.tmp /var/www/index/wp-config.php
+    ' /var/www/dev/wp-config.php > /var/www/dev/wp-config.tmp \
+    && mv /var/www/dev/wp-config.tmp /var/www/dev/wp-config.php

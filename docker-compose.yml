@@ -46,12 +46,12 @@ services:
       - '8080:80'
     restart: on-failure
     volumes:
-      - ./web/config-web/etc-apache2-sites-available-index:/etc/apache2/sites-available:ro
+      - ./web/config-web/etc-apache2-sites-available:/etc/apache2/sites-available:ro
       - ../cc-legal-tools-data:/var/www/git/cc-legal-tools-data:ro
       - ../chooser:/var/www/git/chooser:ro
       - ../faq:/var/www/git/faq:ro
       - ../mp:/var/www/git/mp:ro
-      - wp-data:/var/www/index
+      - wp-data:/var/www/dev
 
   db-dev:
     container_name: db-dev
