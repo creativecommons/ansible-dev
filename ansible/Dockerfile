@@ -35,7 +35,7 @@ RUN python3 -m venv /opt/ansible-venv --system-site-packages && \
 RUN mkdir /etc/ansible/
 
 # Copy local configuration files to the image
-COPY ../config/ansible/ /etc/ansible/
+COPY ../ansible/etc-ansible-config/ /etc/ansible/
 
 # Set environment variables for Ansible
 ENV PATH="/ansible-venv/bin:$PATH"

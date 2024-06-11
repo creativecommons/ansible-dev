@@ -42,10 +42,10 @@ RUN rm -rf /var/lib/apt/lists/*
 
 # Add Apache2's www-data user to sudo group and enable passwordless startup
 RUN adduser www-data sudo
-COPY config/web/www-data_startupservice /etc/sudoers.d/www-data_startupservice
+COPY web/config-web/www-data_startupservice /etc/sudoers.d/www-data_startupservice
 
 # Add Apache2 service startup script
-COPY config/web/startupservice.sh /startupservice.sh
+COPY web/config-web/startupservice.sh /startupservice.sh
 RUN chmod +x /startupservice.sh
 CMD ["sudo", "--preserve-env", "/startupservice.sh"]
 
@@ -58,7 +58,7 @@ RUN a2enmod php8.2
 RUN a2enmod rewrite
 
 # Configure PHP 
-COPY config/web/90-local.ini /etc/php/8.2/apache2/conf.d/
+COPY web/config-web/90-local.ini /etc/php/8.2/apache2/conf.d/
 
 # Install Composer
 # https://getcomposer.org/doc/00-intro.md#installation-linux-unix-macos
