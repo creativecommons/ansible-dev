@@ -52,9 +52,6 @@ services:
       - ../faq:/var/www/git/faq:ro
       - ../mp:/var/www/git/mp:ro
       - wp-data:/var/www/index
-      - ./cache:/var/www/index/cache:ro
-      - ./web/config-web/var-www-index-composer/composer.json:/var/www/index/composer.json
-      - ./web/config-web/var-www-index-composer/composer.lock:/var/www/index/composer.lock
 
   db-dev:
     container_name: db-dev
