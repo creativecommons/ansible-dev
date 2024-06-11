@@ -1,5 +1,2 @@
 # Local configuration
 .env
-
-# Migration
-cache/
