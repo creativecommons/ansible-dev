@@ -13,7 +13,7 @@ RUN apt-config dump \
     | sed -e's/1/0/' \
     | tee /etc/apt/apt.conf.d/99no-recommends-no-suggests
 
-# Resynchronize the package dev files from their sources
+# Resynchronize the package index files from their sources
 RUN apt-get update
 
 # Install packages
