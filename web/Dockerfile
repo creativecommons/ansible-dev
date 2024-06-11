@@ -65,16 +65,6 @@ RUN a2enmod rewrite
 # Configure PHP
 COPY web/config-web/90-local.ini /etc/php/8.2/apache2/conf.d/
 
-# Install Composer
-# https://getcomposer.org/doc/00-intro.md#installation-linux-unix-macos
-#RUN curl -sS https://getcomposer.org/installer \
-#    | php -- --install-dir=/usr/local/bin --filename=composer
-
-# Create compose directory for www-data
-#RUN mkdir /var/www/.composer
-#RUN chown -R www-data:www-data /var/www/.composer
-
-
 # Install WordPress CLI (WP-CLI)
 # https://wp-cli.org/#installing
 RUN curl -L \
