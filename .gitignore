@@ -2,4 +2,5 @@
 # Local configuration
 .env
 
-
+#SSH keys
+sysadmin-ssh-keys/rsa_sysadmin*
