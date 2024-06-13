@@ -28,7 +28,7 @@ services:
       - db-dev
     build:
       args:
-        WP_VERSION: ${WP_VERSION}
+        WP_VERSION: ${WP_VERSION:?have you copied .env.example to .env?}
       context: .
       dockerfile: web/Dockerfile
     networks:

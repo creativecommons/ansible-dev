@@ -12,4 +12,4 @@ echo "${E1}Starting webserver: http://127.0.0.1:8080${E0}"
 /sbin/apache2ctl -D FOREGROUND -k start
 
 # Start SSH service
-/usr/sbin/sshd
+#/usr/sbin/sshd
