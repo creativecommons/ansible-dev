@@ -1,5 +1,4 @@
 # https://docs.docker.com/compose/compose-file/
-version: '3.4'
 
 services:
   ansible-dev:
