@@ -26,12 +26,13 @@ See [`CONTRIBUTING.md`][org-contrib].
 
 The aim of the project is to establish a robust and localized development environment utilizing Ansible and Docker. This environment will mirror a professional work setting, incorporating a dedicated security server (Bastion), automation through Ansible, a web server, and a data storage server. This configuration will simplify and secure development processes and serve as a blueprint for future projects at CC.
 
-**Docker containers:**
+
+#### Docker containers:
 
 The [`docker-compose.yml`](docker-compose.yml) file defines the following
 containers:
 
-- Bastion (SSH jump server)(WIP)
+- WIP: Bastion (SSH jump server)
 - **ansible-dev** - Ansible
 - **web-dev** - Web server (Apache2/WordPress)
 - **db-dev** - Database server (MariaDB)
@@ -42,38 +43,51 @@ containers:
 
 See [Create Local Ansible Dev Environment Using Docker](https://opensource.creativecommons.org/programs/project-ideas/#ansible-dev-env) for more details.
 
+
 ### Setup
+
 - Create the `.env` file:
     ```shell
     cp .env.example .env
     ```
-- Execute generate_ssh_keys script
-- Build/start Docker:
+
+- Execute the `generate_ssh_keys` script:
     ```shell
-    docker compose up
+    ./generate_ssh_keys.sh
     ```
-- Wait for build and initialization to complete
+
+- Build and start Docker:
+    ```shell
+    docker-compose up
+    ```
+
+- Wait for the build and initialization to complete
+
+
 #### SSH (Work in Progress)
 
 The SSH setup has been established and is currently in use for the Ansible container. Follow the steps below to generate and use the SSH keys for the sysadmin user:
-- Execute the generate-ssh-keys.sh script to generate the keys used by the sysadmin user.
-```shell
-./generate-ssh-keys.sh
-```
 
-- Bring down the existing Docker containers and start them again.
-```shell
-docker-compose down
-docker-compose up -d
-```
-- Ensure the Docker containers are running.
-```shell
-docker ps
-```
-- Execute the following command to confirm that SSH is working fine.
-```shell
-ssh -i ./sysadmin-ssh-keys/rsa_sysadmin -p 2222 sysadmin@localhost
-```
+- Execute the generate-ssh-keys.sh script to generate the keys used by the sysadmin user:
+    ```shell
+    ./generate-ssh-keys.sh
+    ```
+
+- Bring down the existing Docker containers and start them again:
+    ```shell
+    docker-compose down
+    docker-compose up -d
+    ```
+
+- Ensure the Docker containers are running:
+    ```shell
+    docker ps
+    ```
+
+- Execute the following command to confirm that SSH is working fine:
+    ```shell
+    ssh -i ./sysadmin-ssh-keys/rsa_sysadmin -p 22001 sysadmin@localhost
+    ```
 
 ## Related Links
 - [Ansible Documentation](https://docs.ansible.com/)

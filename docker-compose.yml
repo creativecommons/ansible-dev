@@ -14,7 +14,7 @@ services:
       - ./sysadmin-ssh-keys/rsa_sysadmin.pub:/home/sysadmin/.ssh/id_rsa.pub:ro
       - ./sysadmin-ssh-keys/rsa_sysadmin.pub:/home/sysadmin/.ssh/authorized_keys:ro
     ports:
-      - "2222:22"
+      - "22001:22"
     environment:
       - USER=sysadmin
     entrypoint: |
@@ -53,7 +53,7 @@ services:
     init: true
     ports:
       - '8080:80'
-      - '2223:22'
+      - '22002:22'
     restart: on-failure
     volumes:
       - ./web/config-web/etc-apache2-sites-available:/etc/apache2/sites-available:ro
