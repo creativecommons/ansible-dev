@@ -27,11 +27,12 @@ See [`CONTRIBUTING.md`][org-contrib].
 The aim of the project is to establish a robust and localized development environment utilizing Ansible and Docker. This environment will mirror a professional work setting, incorporating a dedicated security server (Bastion), automation through Ansible, a web server, and a data storage server. This configuration will simplify and secure development processes and serve as a blueprint for future projects at CC.
 
 Docker containers:
-
-- Bastion (SSH jump server)
-- Ansible
-- Web server (Apache2/WordPress)
-- Database server (MariaDB)
+The [`docker-compose.yml`](docker-compose.yml) file defines the following
+containers:
+- Bastion (SSH jump server)(WIP)
+- **ansible-dev** - Ansible
+- **web-dev** - Web server (Apache2/WordPress)
+- **db-dev** - Database server (MariaDB)
 
 
 ![image](https://github.com/creativecommons/ansible-dev/assets/90766122/21baa18d-715e-4908-9620-15c768994011)
@@ -39,6 +40,27 @@ Docker containers:
 
 See [Create Local Ansible Dev Environment Using Docker](https://opensource.creativecommons.org/programs/project-ideas/#ansible-dev-env) for more details.
 
+#### SSH (Work in Progress)
+
+The SSH setup has been established and is currently in use for the Ansible container. Follow the steps below to generate and use the SSH keys for the sysadmin user:
+- Execute the generate-ssh-keys.sh script to generate the keys used by the sysadmin user.
+```shell
+./generate-ssh-keys.sh
+```
+
+- Bring down the existing Docker containers and start them again.
+```shell
+docker-compose down
+docker-compose up -d
+```
+- Ensure the Docker containers are running.
+```shell
+docker ps
+```
+- Execute the following command to confirm that SSH is working fine.
+```shell
+ssh -i ./sysadmin-ssh-keys/rsa_sysadmin -p 2222 sysadmin@localhost
+```
 
 ## Related Links
 - [Ansible Documentation](https://docs.ansible.com/)
