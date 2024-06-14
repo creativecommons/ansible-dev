@@ -1,5 +1,4 @@
 # https://docs.docker.com/compose/compose-file/
-version: '3.4'
 
 services:
   ansible-dev:
@@ -29,7 +28,7 @@ services:
       - db-dev
     build:
       args:
-        WP_VERSION: ${WP_VERSION}
+        WP_VERSION: ${WP_VERSION:?have you copied .env.example to .env?}
       context: .
       dockerfile: web/Dockerfile
     networks:
