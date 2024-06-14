@@ -1,0 +1,7 @@
+
+# Local configuration
+.env
+
+#SSH keys
+sysadmin-ssh-keys/rsa_sysadmin*
+sysadmin-ssh-keys/authorized_keys
