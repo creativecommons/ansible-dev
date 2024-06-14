@@ -41,6 +41,19 @@ RUN apt-get install -y \
 RUN apt-get clean
 RUN rm -rf /var/lib/apt/lists/*
 
+# Create sysadmin user and add to sudoers
+RUN useradd -m -s /bin/bash sysadmin && \
+    echo "sysadmin:sysadmin" | chpasswd && \
+    usermod -aG sudo sysadmin
+
+# Ensure SSH directory exists with correct permissions
+RUN mkdir -p /home/sysadmin/.ssh && \
+    chown sysadmin:sysadmin /home/sysadmin/.ssh && \
+    chmod 700 /home/sysadmin/.ssh
+
+# Create privilege separation directory for SSH
+RUN mkdir -p /run/sshd
+
 # Add Apache2's www-data user to sudo group and enable passwordless startup
 RUN adduser www-data sudo
 COPY web/config-web/www-data_startupservice /etc/sudoers.d/www-data_startupservice
@@ -49,6 +62,9 @@ COPY web/config-web/www-data_startupservice /etc/sudoers.d/www-data_startupservi
 COPY web/config-web/startupservice.sh /startupservice.sh
 RUN chmod +x /startupservice.sh
 CMD ["sudo", "--preserve-env", "/startupservice.sh"]
+
+# Expose SSH port
+EXPOSE 22
 
 # Expose ports for Apache
 EXPOSE 80
