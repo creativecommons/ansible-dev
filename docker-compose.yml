@@ -56,7 +56,6 @@ services:
       - '22002:22'
     restart: on-failure
     volumes:
-      - ./web/config-web/etc-apache2-sites-available:/etc/apache2/sites-available:ro
       - ../cc-legal-tools-data:/var/www/git/cc-legal-tools-data:ro
       - ../chooser:/var/www/git/chooser:ro
       - ../faq:/var/www/git/faq:ro
