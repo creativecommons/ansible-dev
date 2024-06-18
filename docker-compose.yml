@@ -34,6 +34,7 @@ services:
     networks:
       - dev-backend
     environment:
+      USER: sysadmin
       MYSQL_ROOT_PASSWORD: root
       PMA_HOST: db-dev
       PMA_PORT: 3306
