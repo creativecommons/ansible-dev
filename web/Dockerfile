@@ -29,6 +29,7 @@ RUN apt-get install -y \
     php8.2-mysql \
     php8.2-pdo \
     php8.2-xml \
+    python3 \
     sudo \
     unzip \
     vim \
