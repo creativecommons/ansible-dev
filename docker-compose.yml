@@ -72,6 +72,7 @@ services:
       context: .
       dockerfile: db/Dockerfile
     environment:
+      USER: sysadmin
       MYSQL_DATABASE: wordpress
       MYSQL_ROOT_PASSWORD: root
       MYSQL_USER: root
