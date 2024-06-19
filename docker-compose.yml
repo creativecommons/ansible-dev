@@ -68,16 +68,24 @@ services:
 
   db-dev:
     container_name: db-dev
+    build:
+      context: .
+      dockerfile: db/Dockerfile
     environment:
       MYSQL_DATABASE: wordpress
       MYSQL_ROOT_PASSWORD: root
       MYSQL_USER: root
-    image: mariadb
     networks:
       - dev-backend
     restart: on-failure
+    ports:
+      - "3306:3306"
+      - "22003:22"
     volumes:
       - db-data:/var/lib/mysql
+      - ./sysadmin-ssh-keys/rsa_sysadmin:/home/sysadmin/.ssh/id_rsa:ro
+      - ./sysadmin-ssh-keys/rsa_sysadmin.pub:/home/sysadmin/.ssh/id_rsa.pub:ro
+      - ./sysadmin-ssh-keys/rsa_sysadmin.pub:/home/sysadmin/.ssh/authorized_keys:ro
 
 volumes:
   db-data:
