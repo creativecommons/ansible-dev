@@ -57,10 +57,6 @@ services:
       - '22002:22'
     restart: on-failure
     volumes:
-      - ../cc-legal-tools-data:/var/www/git/cc-legal-tools-data:ro
-      - ../chooser:/var/www/git/chooser:ro
-      - ../faq:/var/www/git/faq:ro
-      - ../mp:/var/www/git/mp:ro
       - wp-data:/var/www/dev
       - ./sysadmin-ssh-keys/rsa_sysadmin:/home/sysadmin/.ssh/id_rsa:ro
       - ./sysadmin-ssh-keys/rsa_sysadmin.pub:/home/sysadmin/.ssh/id_rsa.pub:ro
