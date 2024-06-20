@@ -8,8 +8,9 @@ E1="$(printf "\e[1m")"        # bold
 
 /sbin/apache2ctl -v
 echo "${E1}Starting webserver: http://127.0.0.1:8080${E0}"
-# Start Apache in the foreground
-/sbin/apache2ctl -D FOREGROUND -k start
+
+# Start Apache in the background
+/sbin/apache2ctl -k start
 
 # Start SSH service
-#/usr/sbin/sshd
+/usr/sbin/sshd -D
