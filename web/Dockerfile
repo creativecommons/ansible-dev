@@ -78,6 +78,10 @@ RUN a2enmod rewrite
 # Configure PHP
 COPY web/config-web/90-local.ini /etc/php/8.2/apache2/conf.d/
 
+# Create the wp directory and set permissions
+RUN mkdir -p /usr/local/bin/wp/
+RUN chown -R www-data:www-data /usr/local/bin/wp/
+
 # Create the dev directory and set permissions
 RUN mkdir -p /var/www/dev/wp-content/uploads
 RUN chown -R www-data:www-data /var/www/dev
