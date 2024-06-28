@@ -10,6 +10,8 @@ services:
       - dev-backend
     volumes:
       - ./ansible/etc-ansible-config:/etc/ansible/
+      - ./ansible/site.yml:/etc/ansible/site.yml
+      - ./ansible/roles:/etc/ansible/roles
       - ./sysadmin-ssh-keys/rsa_sysadmin:/home/sysadmin/.ssh/id_rsa:ro
       - ./sysadmin-ssh-keys/rsa_sysadmin.pub:/home/sysadmin/.ssh/id_rsa.pub:ro
       - ./sysadmin-ssh-keys/rsa_sysadmin.pub:/home/sysadmin/.ssh/authorized_keys:ro

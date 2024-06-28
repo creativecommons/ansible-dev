@@ -1,9 +1,19 @@
+- name: Ensure wp directory exists and has correct permissions
+  file:
+    path: /usr/local/bin/wp
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: '0755'
+
 - name: Install WordPress CLI (WP-CLI)
   get_url:
     url: https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
     dest: /usr/local/bin/wp/wp-cli.phar
     # you can do anything with the file or directory, and other users can read and execute it but not alter it
     mode: '0755'
+  become: yes
+  become_user: www-data
 
 - name: Create WP-CLI directory for www-data
   file:
@@ -14,11 +24,11 @@
     mode: '0755'
 
 - name: Use WP-CLI to install WordPress
+  become: yes
+  become_user: www-data
   command: wp core download --version={{ WP_VERSION }}
   args:
     chdir: /var/www/dev
-  become: yes
-  become_user: www-data
 
 # Download wp-config-docker.php for use as wp-config.php
 - name: WordPress basic configuration step 1
