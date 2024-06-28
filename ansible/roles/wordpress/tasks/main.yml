@@ -1,0 +1,46 @@
+- name: Install WordPress CLI (WP-CLI)
+  get_url:
+    url: https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+    dest: /usr/local/bin/wp/wp-cli.phar
+    # you can do anything with the file or directory, and other users can read and execute it but not alter it
+    mode: '0755'
+
+- name: Create WP-CLI directory for www-data
+  file:
+    path: /var/www/.wp-cli
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: '0755'
+
+- name: Use WP-CLI to install WordPress
+  command: wp core download --version={{ WP_VERSION }}
+  args:
+    chdir: /var/www/dev
+  become: yes
+  become_user: www-data
+
+# Download wp-config-docker.php for use as wp-config.php
+- name: WordPress basic configuration step 1
+  get_url:
+    url: https://raw.githubusercontent.com/docker-library/wordpress/master/latest/php8.2/apache/wp-config-docker.php
+    dest: /var/www/dev/wp-config.php
+
+# Use awk to replace all instances of "put your unique phrase here" with a properly unique string (for AUTH_KEY and friends to have safe defaults if they aren't specified with environment variables)
+- name: WordPress basic configuration step 2
+  command: >
+    awk ' 
+    /put your unique phrase here/ { 
+        cmd = "head -c1m /dev/urandom | sha1sum | cut -d\\  -f1"; 
+        cmd | getline str; 
+        close(cmd); 
+        gsub("put your unique phrase here", str); 
+    } 
+    { print } 
+    ' /var/www/dev/wp-config.php > /var/www/dev/wp-config.tmp 
+    && mv /var/www/dev/wp-config.tmp /var/www/dev/wp-config.php
+
+
+
+
+    
