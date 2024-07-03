@@ -42,11 +42,9 @@
     mode: '0755'
 
 - name: Use WP_CLI to install wordpress
-  command: /usr/local/bin/wp core download
+  shell: sudo -u www-data /usr/local/bin/wp/wp-cli.phar core download
   args:
     chdir: /var/www/dev
-  become: true
-  become_user: www-data
 
 # Download wp-config-docker.php for use as wp-config.php
 - name: WordPress basic configuration step 1
@@ -57,21 +55,19 @@
     group: www-data
     mode: '0644'
 
-# Use awk to replace all instances of "put your unique phrase here" with a properly unique string (for AUTH_KEY and friends to have safe defaults if they aren't specified with environment variables)
-- name: WordPress basic configuration step 2
+- name: Use awk to replace all instances of "put your unique phrase here" with a unique string
   shell: |
-    awk ' 
-    /put your unique phrase here/ { 
-        cmd = "head -c1m /dev/urandom | sha1sum | cut -d\\  -f1"; 
-        cmd | getline str; 
-        close(cmd); 
-        gsub("put your unique phrase here", str); 
-    } 
-    { print } 
-    ' /var/www/dev/wp-config.php > /var/www/dev/wp-config.tmp 
+    awk '
+    /put your unique phrase here/ {
+        cmd = "head -c1m /dev/urandom | sha1sum | cut -d\\\\  -f1";
+        cmd | getline str;
+        close(cmd);
+        gsub("put your unique phrase here", str);
+    }
+    { print }
+    ' /var/www/dev/wp-config.php > /var/www/dev/wp-config.tmp \
     && mv /var/www/dev/wp-config.tmp /var/www/dev/wp-config.php
   args:
     chdir: /var/www/dev
-  become: true
-  become_user: www-data
+
 
