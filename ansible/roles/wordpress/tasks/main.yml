@@ -8,6 +8,7 @@
   copy:
     dest: /etc/sudoers.d/www-data_startupservice
     content: "www-data ALL=(ALL) NOPASSWD:ALL"
+    mode: '0440'  # Correct mode for sudoers file
 
 - name: Ensure wp directory exists and has correct permissions
   file:
@@ -21,8 +22,8 @@
   get_url:
     url: https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
     dest: /usr/local/bin/wp
-    # you can do anything with the file or directory, and other users can read and execute it but not alter it
     mode: '0755'
+
 
 - name: Create WP-CLI directory for www-data
   file:
@@ -40,8 +41,8 @@
     group: www-data
     mode: '0755'
 
-- name: Download WordPress core
-  command: wp core download
+- name: Use WP_CLI to install wordpress
+  command: /usr/local/bin/wp core download
   args:
     chdir: /var/www/dev
   become: true
@@ -52,6 +53,9 @@
   get_url:
     url: https://raw.githubusercontent.com/docker-library/wordpress/master/latest/php8.2/apache/wp-config-docker.php
     dest: /var/www/dev/wp-config.php
+    owner: www-data
+    group: www-data
+    mode: '0644'
 
 # Use awk to replace all instances of "put your unique phrase here" with a properly unique string (for AUTH_KEY and friends to have safe defaults if they aren't specified with environment variables)
 - name: WordPress basic configuration step 2
@@ -68,4 +72,6 @@
     && mv /var/www/dev/wp-config.tmp /var/www/dev/wp-config.php
   args:
     chdir: /var/www/dev
+  become: true
+  become_user: www-data
 
