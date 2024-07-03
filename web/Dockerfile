@@ -46,6 +46,7 @@ RUN rm -rf /var/lib/apt/lists/*
 RUN useradd -m -s /bin/bash sysadmin && \
     echo "sysadmin:sysadmin" | chpasswd && \
     usermod -aG sudo sysadmin
+COPY·web/etc-sudoers.d/sysadmin_all_nopass·/etc/sudoers.d/sysadmin_all_nopass
 
 # Ensure SSH directory exists with correct permissions
 RUN mkdir -p /home/sysadmin/.ssh && \
@@ -57,10 +58,10 @@ RUN mkdir -p /run/sshd
 
 # Add Apache2's www-data user to sudo group and enable passwordless startup
 RUN adduser www-data sudo
-COPY web/config-web/www-data_startupservice /etc/sudoers.d/www-data_startupservice
+COPY web/etc-sudoers.d/www-data_startupservice /etc/sudoers.d/www-data_startupservice
 
 # Add Apache2 service startup script
-COPY web/config-web/startupservice.sh /startupservice.sh
+COPY web/startupservice.sh /startupservice.sh
 RUN chmod +x /startupservice.sh
 CMD ["sudo", "--preserve-env", "/startupservice.sh"]
 
@@ -76,7 +77,7 @@ RUN a2enmod php8.2
 RUN a2enmod rewrite
 
 # Configure PHP
-COPY web/config-web/90-local.ini /etc/php/8.2/apache2/conf.d/
+COPY web/etc-php-8.2-apache2-conf.d/90-local.ini /etc/php/8.2/apache2/conf.d/
 
 # Create the wp directory and set permissions
 RUN mkdir -p /usr/local/bin/wp/

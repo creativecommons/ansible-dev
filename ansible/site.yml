@@ -1,5 +1,3 @@
 - hosts: web
-  become: yes
-  become_user: sysadmin
   roles:
     - wordpress
