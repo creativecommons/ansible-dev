@@ -3,15 +3,11 @@
     name: www-data
     groups: sudo
     append: yes
-  become: yes
-  become_user: root
 
 - name: Enable passwordless startup for www-data
   copy:
     dest: /etc/sudoers.d/www-data_startupservice
     content: "www-data ALL=(ALL) NOPASSWD:ALL"
-  become: yes
-  become_user: root
 
 - name: Ensure wp directory exists and has correct permissions
   file:
@@ -20,8 +16,6 @@
     owner: www-data
     group: www-data
     mode: '0755'
-  become: yes
-  become_user: root
 
 - name: Install WordPress CLI (WP-CLI)
   get_url:
@@ -29,8 +23,6 @@
     dest: /usr/local/bin/wp
     # you can do anything with the file or directory, and other users can read and execute it but not alter it
     mode: '0755'
-  become: yes
-  become_user: root
 
 - name: Create WP-CLI directory for www-data
   file:
@@ -39,8 +31,6 @@
     owner: www-data
     group: www-data
     mode: '0755'
-  become: yes
-  become_user: root
 
 - name: Create the WordPress directory and set permissions
   file:
@@ -49,11 +39,9 @@
     owner: www-data
     group: www-data
     mode: '0755'
-  become: yes
-  become_user: root
 
 - name: Download WordPress core
-  command: wp core download --version={{ wp_version }}
+  command: wp core download
   args:
     chdir: /var/www/dev
   become: true
@@ -64,8 +52,6 @@
   get_url:
     url: https://raw.githubusercontent.com/docker-library/wordpress/master/latest/php8.2/apache/wp-config-docker.php
     dest: /var/www/dev/wp-config.php
-  become: true
-  become_user: www-data
 
 # Use awk to replace all instances of "put your unique phrase here" with a properly unique string (for AUTH_KEY and friends to have safe defaults if they aren't specified with environment variables)
 - name: WordPress basic configuration step 2
@@ -82,6 +68,4 @@
     && mv /var/www/dev/wp-config.tmp /var/www/dev/wp-config.php
   args:
     chdir: /var/www/dev
-  become: true
-  become_user: www-data
 
