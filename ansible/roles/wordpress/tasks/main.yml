@@ -42,9 +42,11 @@
     mode: '0755'
 
 - name: Use WP_CLI to install wordpress
-  shell: sudo -u www-data /usr/local/bin/wp/wp-cli.phar core download
+  shell: sudo -u www-data /usr/local/bin/wp/wp-cli.phar core download --version={{wp_version}}
   args:
     chdir: /var/www/dev
+  vars:
+    wp_version: 6.3.4
 
 # Download wp-config-docker.php for use as wp-config.php
 - name: WordPress basic configuration step 1
