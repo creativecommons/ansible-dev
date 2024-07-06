@@ -41,8 +41,17 @@
     group: www-data
     mode: '0755'
 
+- name: check wordpress installed
+  shell: sudo -u www-data /usr/local/bin/wp/wp-cli.phar --no-color --quiet core is-installed #$> /dev/null is supposed to silence stdout and stderr while keeping the return code, but for some reason this one also gets rid of the return code
+  ignore_errors: true
+  args:
+    chdir: /var/www/dev
+  register: wp_installed
+
+# Currently not working because web-dev is running the server with www-data user which cannot connect to the db because www-data does not have access to the environment variables passed from docker. Only root has access to those environment variables. And because it cannot connect to the DB, this step always fails when trying to check if wordpress is installed
 - name: Use WP_CLI to install wordpress
   shell: sudo -u www-data /usr/local/bin/wp/wp-cli.phar core download --version={{wp_version}}
+  when: wp_installed.rc != 0
   args:
     chdir: /var/www/dev
   vars:
