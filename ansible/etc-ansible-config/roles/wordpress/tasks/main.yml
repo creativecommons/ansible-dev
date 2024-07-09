@@ -41,13 +41,6 @@
     group: www-data
     mode: '0755'
 
-- name: check wordpress installed
-  shell: sudo -u www-data /usr/local/bin/wp/wp-cli.phar --no-color --quiet core is-installed
-  args:
-    chdir: /var/www/dev
-  register: wp_installed
-  ignore_errors: yes
-
 - name: Use WP_CLI to install WordPress
   shell: sudo -E -u www-data /usr/local/bin/wp/wp-cli.phar core download --version={{wp_version}}
   when: wp_installed.rc != 0
