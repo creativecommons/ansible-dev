@@ -10,8 +10,6 @@ services:
       - dev-backend
     volumes:
       - ./ansible/etc-ansible-config:/etc/ansible/
-      - ./ansible/site.yml:/etc/ansible/site.yml
-      - ./ansible/roles:/etc/ansible/roles
       - ./sysadmin-ssh-keys/rsa_sysadmin:/home/sysadmin/.ssh/id_rsa:ro
       - ./sysadmin-ssh-keys/rsa_sysadmin.pub:/home/sysadmin/.ssh/id_rsa.pub:ro
       - ./sysadmin-ssh-keys/rsa_sysadmin.pub:/home/sysadmin/.ssh/authorized_keys:ro
@@ -59,6 +57,7 @@ services:
       - '22002:22'
     restart: on-failure
     volumes:
+      - ./web/etc-apache2-sites-available:/etc/apache2/sites-available
       - wp-data:/var/www/dev
       - ./sysadmin-ssh-keys/rsa_sysadmin:/home/sysadmin/.ssh/id_rsa:ro
       - ./sysadmin-ssh-keys/rsa_sysadmin.pub:/home/sysadmin/.ssh/id_rsa.pub:ro
