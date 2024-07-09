@@ -43,7 +43,6 @@
 
 - name: Use WP_CLI to install WordPress
   shell: sudo -E -u www-data /usr/local/bin/wp/wp-cli.phar core download --version={{wp_version}}
-  when: wp_installed.rc != 0
   args:
     chdir: /var/www/dev
   vars:
