@@ -41,8 +41,14 @@
     group: www-data
     mode: '0755'
 
+- name: Check Wordpress installed
+  stat:
+    path: /var/www/dev/wp-config.php
+  register: wp_config
+
 - name: Use WP_CLI to install WordPress
-  shell: sudo -E -u www-data /usr/local/bin/wp/wp-cli.phar core download --version={{wp_version}}
+  shell: sudo -u www-data /usr/local/bin/wp/wp-cli.phar core download --version={{wp_version}}
+  when: not wp_config.stat.exists
   args:
     chdir: /var/www/dev
   vars:
@@ -71,5 +77,3 @@
     && mv /var/www/dev/wp-config.tmp /var/www/dev/wp-config.php
   args:
     chdir: /var/www/dev
-
-
