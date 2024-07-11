@@ -46,6 +46,7 @@ RUN python3 -m venv /opt/ansible-venv --system-site-packages && \
 
 # Create a directory for Ansible configuration
 RUN mkdir /etc/ansible/
+WORKDIR /etc/ansible/
 
 # Set environment variables for Ansible
 ENV PATH="/opt/ansible-venv/bin:$PATH"

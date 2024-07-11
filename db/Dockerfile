@@ -30,6 +30,11 @@ RUN mkdir -p /run/sshd
 
 # Expose SSH port
 EXPOSE 22
+EXPOSE 3306
 
-# Start SSH service
-CMD ["/usr/sbin/sshd", "-D"]
+# Add mariadb service startup script
+COPY ./db/startupservice.sh /startupservice.sh
+RUN chmod +x /startupservice.sh
+
+ENTRYPOINT ["/startupservice.sh"]
+CMD ["mariadbd"]

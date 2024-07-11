@@ -1,0 +1,79 @@
+- name: Add Apache2's www-data user to sudo group
+  user:
+    name: www-data
+    groups: sudo
+    append: yes
+
+- name: Enable passwordless startup for www-data
+  copy:
+    dest: /etc/sudoers.d/www-data_startupservice
+    content: "www-data ALL=(ALL) NOPASSWD:ALL"
+    mode: '0440'  # Correct mode for sudoers file
+
+- name: Ensure wp directory exists and has correct permissions
+  file:
+    path: /usr/local/bin/wp
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: '0755'
+
+- name: Install WordPress CLI (WP-CLI)
+  get_url:
+    url: https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+    dest: /usr/local/bin/wp
+    mode: '0755'
+
+
+- name: Create WP-CLI directory for www-data
+  file:
+    path: /var/www/.wp-cli
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: '0755'
+
+- name: Create the WordPress directory and set permissions
+  file:
+    path: /var/www/dev/wp-content/uploads
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: '0755'
+
+- name: Check Wordpress installed
+  stat:
+    path: /var/www/dev/wp-config.php
+  register: wp_config
+
+- name: Use WP_CLI to install WordPress
+  shell: sudo -u www-data /usr/local/bin/wp/wp-cli.phar core download --version={{wp_version}}
+  when: not wp_config.stat.exists
+  args:
+    chdir: /var/www/dev
+  vars:
+    wp_version: 6.3.4
+
+# Download wp-config-docker.php for use as wp-config.php
+- name: WordPress basic configuration
+  get_url:
+    url: https://raw.githubusercontent.com/docker-library/wordpress/master/latest/php8.2/apache/wp-config-docker.php
+    dest: /var/www/dev/wp-config.php
+    owner: www-data
+    group: www-data
+    mode: '0644'
+
+- name: Use awk to replace all instances of "put your unique phrase here" with a unique string
+  shell: |
+    awk '
+    /put your unique phrase here/ {
+        cmd = "head -c1m /dev/urandom | sha1sum | cut -d\\\\  -f1";
+        cmd | getline str;
+        close(cmd);
+        gsub("put your unique phrase here", str);
+    }
+    { print }
+    ' /var/www/dev/wp-config.php > /var/www/dev/wp-config.tmp \
+    && mv /var/www/dev/wp-config.tmp /var/www/dev/wp-config.php
+  args:
+    chdir: /var/www/dev
