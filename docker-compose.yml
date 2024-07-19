@@ -87,7 +87,9 @@ services:
 
   bastion-dev:
     container_name: bastion-dev
-    image: binlab/bastion
+    build:
+      context: .
+      dockerfile: bastion/Dockerfile
     networks:
       - dev-backend
       - dev-frontend
@@ -95,12 +97,10 @@ services:
       - 22/tcp
     ports:
       - 22222:22/tcp
-    environment:
-      PUBKEY_AUTHENTICATION: "true"
     volumes:
-      - ./sysadmin-ssh-keys/rsa_sysadmin:/var/lib/bastion/id_rsa:ro
-      - ./sysadmin-ssh-keys/rsa_sysadmin.pub:/var/lib/bastion/id_rsa.pub:ro
-      - ./sysadmin-ssh-keys/rsa_sysadmin.pub:/var/lib/bastion/authorized_keys:ro
+      - ./sysadmin-ssh-keys/rsa_sysadmin:/home/sysadmin/.ssh/id_rsa:ro
+      - ./sysadmin-ssh-keys/rsa_sysadmin.pub:/home/sysadmin/.ssh/id_rsa.pub:ro
+      - ./sysadmin-ssh-keys/rsa_sysadmin.pub:/home/sysadmin/.ssh/authorized_keys:ro
       
 volumes:
   db-data:
