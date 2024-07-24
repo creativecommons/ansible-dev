@@ -6,10 +6,10 @@ set -o nounset
 E0="$(printf "\e[0m")"        # reset
 E1="$(printf "\e[1m")"        # bold
 
+# Start SSH service
+/usr/sbin/sshd -D
+
 echo "${E1}Starting mariadb: http://127.0.0.1:3306${E0}"
 
 # Start mariadb in the background
 docker-entrypoint.sh "$@"
-
-# Start SSH service
-/usr/sbin/sshd -D
