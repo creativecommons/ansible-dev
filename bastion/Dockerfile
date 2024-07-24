@@ -31,6 +31,9 @@ RUN rm -rf /var/lib/apt/lists/*
 RUN useradd -m -s /bin/bash sysadmin && echo "sysadmin:sysadmin" | chpasswd && \
     usermod -aG sudo sysadmin
 
+# Copy the sudoers file for sysadmin user to the appropriate directory
+COPY ./bastion/etc-sudoers.d/sysadmin_all_nopass /etc/sudoers.d/sysadmin_all_nopass
+
 # Ensure SSH directory exists with correct permissions
 RUN mkdir -p /home/sysadmin/.ssh && \
     chown sysadmin:sysadmin /home/sysadmin/.ssh && \
