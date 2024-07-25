@@ -28,6 +28,12 @@ RUN mkdir -p /home/sysadmin/.ssh && \
 # Create privilege separation directory for SSH
 RUN mkdir -p /run/sshd
 
+# Configure SSH for agent forwarding and secure settings
+RUN echo "AllowAgentForwarding yes" >> /etc/ssh/sshd_config && \
+    echo "PermitRootLogin prohibit-password" >> /etc/ssh/sshd_config && \
+    echo "PasswordAuthentication no" >> /etc/ssh/sshd_config && \
+    echo "PubkeyAuthentication yes" >> /etc/ssh/sshd_config
+
 # Expose SSH port
 EXPOSE 22
 EXPOSE 3306

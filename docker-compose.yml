@@ -92,7 +92,6 @@ services:
       dockerfile: bastion/Dockerfile
     networks:
       - dev-backend
-      - dev-frontend
     expose:
       - 22/tcp
     ports:
@@ -115,5 +114,3 @@ networks:
     name: dev-backend
     driver: bridge
 
-  dev-frontend:
-    name: dev-frontend
