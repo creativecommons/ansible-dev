@@ -102,6 +102,8 @@ services:
       - ./sysadmin-ssh-keys/rsa_sysadmin.pub:/home/sysadmin/.ssh/id_rsa.pub:ro
       - ./sysadmin-ssh-keys/rsa_sysadmin.pub:/home/sysadmin/.ssh/authorized_keys:ro
       - ./bastion/etc-bastion-config/config:/home/sysadmin/.ssh/config:ro
+
+
 volumes:
   db-data:
     name: db-data
@@ -111,5 +113,7 @@ volumes:
 networks:
   dev-backend:
     name: dev-backend
+    driver: bridge
+
   dev-frontend:
     name: dev-frontend
