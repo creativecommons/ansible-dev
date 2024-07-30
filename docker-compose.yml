@@ -83,7 +83,6 @@ services:
       dockerfile: bastion/Dockerfile
     networks:
       - dev-backend
-      - dev-frontend
     expose:
       - 22/tcp
     ports:
@@ -91,8 +90,10 @@ services:
     volumes:
       - ./sysadmin-ssh-keys/rsa_sysadmin:/home/sysadmin/.ssh/id_rsa:ro
       - ./sysadmin-ssh-keys/rsa_sysadmin.pub:/home/sysadmin/.ssh/id_rsa.pub:ro
-      - ./sysadmin-ssh-keys/rsa_sysadmin.pub:/home/sysadmin/.ssh/authorized_keys:ro
+      -·./sysadmin-ssh-keys/rsa_sysadmin.pub:/home/sysadmin/.ssh/authorized_keys:ro
       - ./bastion/etc-bastion-config/config:/home/sysadmin/.ssh/config:ro
+
+
 volumes:
   db-data:
     name: db-data
@@ -102,5 +103,5 @@ volumes:
 networks:
   dev-backend:
     name: dev-backend
-  dev-frontend:
-    name: dev-frontend
+    driver: bridge
+
