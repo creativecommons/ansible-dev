@@ -56,5 +56,5 @@ ENV ANSIBLE_CONFIG=/etc/ansible/ansible.cfg
 EXPOSE 22
 
 # Start SSH service
-CMD ["/usr/sbin/sshd", "-D"]
+ENTRYPOINT ["/bin/sh", "-c", "ansible-playbook site.yml && /usr/sbin/sshd -D"]
 
