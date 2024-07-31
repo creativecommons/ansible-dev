@@ -17,10 +17,6 @@ services:
       - "22001:22"
     environment:
       - USER=sysadmin
-    entrypoint: |
-      sh -c "
-        exec /usr/sbin/sshd -D
-      "
 
   web-dev:
     container_name: web-dev
