@@ -1,0 +1,16 @@
+Host ansible-dev
+    HostName ansible-dev
+    User sysadmin
+    IdentityFile /home/sysadmin/.ssh/id_rsa
+    ProxyJump bastion
+
+Host web-dev
+    HostName web-dev
+    User sysadmin
+    IdentityFile /home/sysadmin/.ssh/id_rsa
+    ProxyJump bastion
+
+Host bastion
+   HostName bastion-dev
+   User sysadmin
+   IdentityFile /home/sysadmin/.ssh/id_rsa
