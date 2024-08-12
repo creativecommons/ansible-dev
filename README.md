@@ -96,14 +96,14 @@ Host ansible-dev
     User sysadmin
     Port 22222
     IdentityFile /home/sysadmin/.ssh/id_rsa
-    ProxyJump bastion
+    ProxyJump bastion-dev
 
 Host web-dev
     HostName localhost
     User sysadmin
     Port 22001
     IdentityFile /home/sysadmin/.ssh/id_rsa
-    ProxyJump bastion
+    ProxyJump bastion-dev
 
 Host bastion-dev
     HostName localhost
