@@ -32,7 +32,7 @@ The aim of the project is to establish a robust and localized development enviro
 The [`docker-compose.yml`](docker-compose.yml) file defines the following
 containers:
 
-- WIP: Bastion (SSH jump server)
+- **bastion-dev** - Bastion (SSH jump server)
 - **ansible-dev** - Ansible
 - **web-dev** - Web server (Apache2/WordPress)
 - **db-dev** - Database server (MariaDB)
@@ -88,6 +88,32 @@ The SSH setup has been established and is currently in use for the Ansible conta
     ```shell
     ssh -i ./sysadmin-ssh-keys/rsa_sysadmin -p 22001 sysadmin@localhost
     ```
+
+**SSH connection information**: example local/laptop `~/.ssh/config` configugration
+```
+Host ansible-dev
+    HostName localhost
+    User sysadmin
+    Port 22222
+    IdentityFile /home/sysadmin/.ssh/id_rsa
+    ProxyJump bastion
+
+Host web-dev
+    HostName localhost
+    User sysadmin
+    Port 22001
+    IdentityFile /home/sysadmin/.ssh/id_rsa
+    ProxyJump bastion
+
+Host bastion-dev
+    HostName localhost
+    Port 22002
+    User sysadmin
+    IdentityFile /home/sysadmin/.ssh/id_rsa
+```
+- Assume remote username `sysadmin`. Replace these values in your own local/laptop configuration.
+- ProxyJump allow you to use `ssh bastion` to connect to the bastion-dev host, and `ssh ansible-dev` or `ssh web-dev`, and SSH will automatically connect through the bastion jump host.
+
 
 ## Related Links
 - [Ansible Documentation](https://docs.ansible.com/)
