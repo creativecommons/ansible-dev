@@ -42,10 +42,9 @@ RUN mkdir -p /run/sshd
 
 # Update SSH configuration to disable password authentication
 RUN sed -i 's/#PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config && \
-    sed -i 's/#PermitRootLogin yes/PermitRootLogin no/' /etc/ssh/sshd_config && \
-    echo "AllowTcpForwarding yes" >> /etc/ssh/sshd_config && \
-    echo "GatewayPorts yes" >> /etc/ssh/sshd_config
-
+    sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin no/' /etc/ssh/sshd_config && \
+    sed -i 's/#AllowTcpForwarding yes/AllowTcpForwarding yes/' /etc/ssh/sshd_config && \
+    sed -i 's/#GatewayPorts no/GatewayPorts yes/' /etc/ssh/sshd_config
 
 # Expose SSH port
 EXPOSE 22

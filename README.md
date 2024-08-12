@@ -91,24 +91,22 @@ The SSH setup has been established and is currently in use for the Ansible conta
 
 **SSH connection information**: example local/laptop `~/.ssh/config` configugration
 ```
-Host ansible-dev
+Host bastion-dev
     HostName localhost
     User sysadmin
     Port 22222
     IdentityFile /home/sysadmin/.ssh/id_rsa
-    ProxyJump bastion-dev
+
+Host ansible-dev
+    HostName ansible-dev
+    User sysadmin
+    Port 22
+    IdentityFile /home/sysadmin/.ssh/id_rsa
 
 Host web-dev
-    HostName localhost
+    HostName web-dev
     User sysadmin
-    Port 22001
-    IdentityFile /home/sysadmin/.ssh/id_rsa
-    ProxyJump bastion-dev
-
-Host bastion-dev
-    HostName localhost
-    Port 22002
-    User sysadmin
+    Port 22
     IdentityFile /home/sysadmin/.ssh/id_rsa
 ```
 - Assume remote username `sysadmin`. Replace these values in your own local/laptop configuration.
