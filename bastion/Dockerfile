@@ -14,23 +14,23 @@ RUN apt-config dump \
 # Resynchronize the package index files from their sources
 RUN apt-get update
 
-# Install packages
+# Install git
 RUN apt-get install -y \
-    python3 \
-    python3-pip \
-    python3-venv \
+    sed \
     openssh-client \
     openssh-server \
-    wget \
-    vim \
-    sudo
+    vim
 
 # Clean up packages: Saves space by removing unnecessary package files and lists
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN apt-get clean
+RUN rm -rf /var/lib/apt/lists/*
 
 # Create sysadmin user and add to sudoers
 RUN useradd -m -s /bin/bash sysadmin && echo "sysadmin:sysadmin" | chpasswd && \
     usermod -aG sudo sysadmin
+
+# Copy the sudoers file for sysadmin user to the appropriate directory
+COPY ./bastion/etc-sudoers.d/sysadmin_all_nopass /etc/sudoers.d/sysadmin_all_nopass
 
 # Ensure SSH directory exists with correct permissions
 RUN mkdir -p /home/sysadmin/.ssh && \
@@ -40,20 +40,14 @@ RUN mkdir -p /home/sysadmin/.ssh && \
 # Create privilege separation directory for SSH
 RUN mkdir -p /run/sshd
 
-# Create a virtual environment and install Ansible using pip
-RUN python3 -m venv /opt/ansible-venv --system-site-packages && \
-    /opt/ansible-venv/bin/pip install --no-cache-dir ansible
-
-# Create a directory for Ansible configuration
-RUN mkdir /etc/ansible/
-WORKDIR /etc/ansible/
-
-# Set environment variables for Ansible
-ENV PATH="/opt/ansible-venv/bin:$PATH"
-ENV ANSIBLE_CONFIG=/etc/ansible/ansible.cfg
+# Update SSH configuration to disable password authentication
+RUN sed -i 's/#PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config && \
+    sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin no/' /etc/ssh/sshd_config && \
+    sed -i 's/#AllowTcpForwarding yes/AllowTcpForwarding yes/' /etc/ssh/sshd_config && \
+    sed -i 's/#GatewayPorts no/GatewayPorts yes/' /etc/ssh/sshd_config
 
 # Expose SSH port
 EXPOSE 22
 
-# Start SSH service
+# Start the SSH daemon
 CMD ["/usr/sbin/sshd", "-D"]

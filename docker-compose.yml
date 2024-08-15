@@ -17,10 +17,6 @@ services:
       - "22001:22"
     environment:
       - USER=sysadmin
-    entrypoint: |
-      sh -c "
-        exec /usr/sbin/sshd -D
-      "
 
   web-dev:
     container_name: web-dev
@@ -65,22 +61,29 @@ services:
 
   db-dev:
     container_name: db-dev
-    build:
-      context: .
-      dockerfile: db/Dockerfile
     environment:
-      USER: sysadmin
       MYSQL_DATABASE: wordpress
       MYSQL_ROOT_PASSWORD: root
       MYSQL_USER: root
+    image: mariadb
     networks:
       - dev-backend
     restart: on-failure
-    ports:
-      - "3306:3306"
-      - "22003:22"
     volumes:
       - db-data:/var/lib/mysql
+
+  bastion-dev:
+    container_name: bastion-dev
+    build:
+      context: .
+      dockerfile: bastion/Dockerfile
+    networks:
+      - dev-backend
+    expose:
+      - 22/tcp
+    ports:
+      - 22222:22/tcp
+    volumes:
       - ./sysadmin-ssh-keys/rsa_sysadmin:/home/sysadmin/.ssh/id_rsa:ro
       - ./sysadmin-ssh-keys/rsa_sysadmin.pub:/home/sysadmin/.ssh/id_rsa.pub:ro
       - ./sysadmin-ssh-keys/rsa_sysadmin.pub:/home/sysadmin/.ssh/authorized_keys:ro
@@ -94,4 +97,5 @@ volumes:
 networks:
   dev-backend:
     name: dev-backend
+    driver: bridge
 

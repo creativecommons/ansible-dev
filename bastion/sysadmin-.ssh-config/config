@@ -1,0 +1,17 @@
+Host bastion-dev
+    HostName localhost
+    User sysadmin
+    Port 22222
+    IdentityFile /home/sysadmin/.ssh/id_rsa
+
+Host ansible-dev
+    HostName ansible-dev
+    User sysadmin
+    Port 22
+    IdentityFile /home/sysadmin/.ssh/id_rsa
+
+Host web-dev
+    HostName web-dev
+    User sysadmin
+    Port 22
+    IdentityFile /home/sysadmin/.ssh/id_rsa
