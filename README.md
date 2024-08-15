@@ -89,29 +89,16 @@ The SSH setup has been established and is currently in use for the Ansible conta
     ssh -i ./sysadmin-ssh-keys/rsa_sysadmin -p 22001 sysadmin@localhost
     ```
 
-**SSH connection information**: example local/laptop `~/.ssh/config` configugration
-```
-Host bastion-dev
-    HostName localhost
-    User sysadmin
-    Port 22222
-    IdentityFile /home/sysadmin/.ssh/id_rsa
-
-Host ansible-dev
-    HostName ansible-dev
-    User sysadmin
-    Port 22
-    IdentityFile /home/sysadmin/.ssh/id_rsa
-
-Host web-dev
-    HostName web-dev
-    User sysadmin
-    Port 22
-    IdentityFile /home/sysadmin/.ssh/id_rsa
-```
-- Assume remote username `sysadmin`. Replace these values in your own local/laptop configuration.
+**SSH connection from bastion**:
 - ProxyJump allow you to use `ssh bastion` to connect to the bastion-dev host, and `ssh ansible-dev` or `ssh web-dev`, and SSH will automatically connect through the bastion jump host.
+Execute.the.following.command.to.confirm.the.bastion connection:
+....```shell
+    ssh -J sysadmin@localhost:22222 sysadmin@web-dev
+....```
 
+....```shell
+....ssh.-J.sysadmin@localhost:22222.sysadmin@ansible-dev
+....`
 
 ## Related Links
 - [Ansible Documentation](https://docs.ansible.com/)
