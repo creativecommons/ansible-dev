@@ -91,14 +91,16 @@ The SSH setup has been established and is currently in use for the Ansible conta
 
 **SSH connection from bastion**:
 - ProxyJump allow you to use `ssh bastion` to connect to the bastion-dev host, and `ssh ansible-dev` or `ssh web-dev`, and SSH will automatically connect through the bastion jump host.
-Execute.the.following.command.to.confirm.the.bastion connection:
-....```shell
-    ssh -J sysadmin@localhost:22222 sysadmin@web-dev
-....```
+- currently, db-dev is not handled through bastion
+- Execute the following command to confirm the bastion connection:
 
-....```shell
-....ssh.-J.sysadmin@localhost:22222.sysadmin@ansible-dev
-....`
+    ```shell
+    ssh -J sysadmin@localhost:22222 sysadmin@web-dev
+    ```
+
+    ```shell
+    ssh.-J.sysadmin@localhost:22222.sysadmin@ansible-dev
+    ```
 
 ## Related Links
 - [Ansible Documentation](https://docs.ansible.com/)
