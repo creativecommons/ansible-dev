@@ -99,7 +99,7 @@ The SSH setup has been established and is currently in use for the Ansible conta
     ```
 
     ```shell
-    ssh.-J.sysadmin@localhost:22222.sysadmin@ansible-dev
+    ssh -J sysadmin@localhost:22222 sysadmin@ansible-dev
     ```
 
 ## Related Links
