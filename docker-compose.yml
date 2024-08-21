@@ -10,6 +10,7 @@ services:
       - dev-backend
     volumes:
       - ./ansible/etc-ansible-config:/etc/ansible/
+      - ./web/etc-php-8.2-apache2-conf.d:/etc/ansible/web/etc-php-8.2-apache2-conf.d
       - ./sysadmin-ssh-keys/rsa_sysadmin:/home/sysadmin/.ssh/id_rsa:ro
       - ./sysadmin-ssh-keys/rsa_sysadmin.pub:/home/sysadmin/.ssh/id_rsa.pub:ro
       - ./sysadmin-ssh-keys/rsa_sysadmin.pub:/home/sysadmin/.ssh/authorized_keys:ro
