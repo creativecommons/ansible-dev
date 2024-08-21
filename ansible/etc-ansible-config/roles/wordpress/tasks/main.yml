@@ -1,3 +1,20 @@
+- name: Install packages
+  apt:
+    name:
+      - libapache2-mod-php
+      - mariadb-client
+      - php8.2
+      - php8.2-mbstring
+      - php8.2-mysql
+      - php8.2-pdo
+      - php8.2-xml
+    state: latest
+
+- name: Config PHP
+  copy:
+    src: /etc/ansible/web/etc-php-8.2-apache2-conf.d/90-local.ini
+    dest: /etc/php/8.2/apache2/conf.d/
+
 - name: Add Apache2's www-data user to sudo group
   user:
     name: www-data
@@ -17,6 +34,45 @@
     owner: www-data
     group: www-data
     mode: '0755'
+
+- name: Ensure /var/www/dev/ is writable by www-data
+  file:
+    path: /var/www/dev/
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: '0755'
+
+- name: Enable Apache modules headers
+  community.general.apache2_module:
+    state: present
+    name: headers
+
+- name: Disable conflicting Apache module mpm_event
+  apache2_module:
+    name: mpm_event
+    state: absent
+
+- name: Disable conflicting Apache module mpm_worker
+  apache2_module:
+    name: mpm_worker
+    state: absent
+
+- name: Disable conflicting Apache module php5
+  apache2_module:
+    name: php5
+    state: absent
+
+- name: Check if php_module is enabled
+  command: apache2ctl -M
+  register: apache_modules
+
+- name: Enable Apache module php8.2
+  apache2_module:
+    name: php8.2
+    state: present
+    identifier: php_module
+  when: "'php_module' not in apache_modules.stdout"
 
 - name: Install WordPress CLI (WP-CLI)
   get_url:

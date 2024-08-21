@@ -21,13 +21,6 @@ RUN apt-get install -y \
     curl \
     git \
     less \
-    libapache2-mod-php \
-    mariadb-client \
-    php8.2 \
-    php8.2-mbstring \
-    php8.2-mysql \
-    php8.2-pdo \
-    php8.2-xml \
     python3 \
     sudo \
     unzip \
@@ -57,10 +50,6 @@ RUN mkdir -p /home/sysadmin/.ssh && \
 # Create privilege separation directory for SSH
 RUN mkdir -p /run/sshd
 
-# Add Apache2's www-data user to sudo group and enable passwordless startup
-RUN adduser www-data sudo
-COPY ./web/etc-sudoers.d/www-data_startupservice /etc/sudoers.d/www-data_startupservice
-
 # Add Apache2 service startup script
 COPY ./web/startupservice.sh /startupservice.sh
 RUN chmod +x /startupservice.sh
@@ -73,18 +62,5 @@ EXPOSE 22
 EXPOSE 80
 
 # Enable Apache modules
-RUN a2enmod headers
-RUN a2enmod php8.2
 RUN a2enmod rewrite
-
-# Configure PHP
-COPY ./web/etc-php-8.2-apache2-conf.d/90-local.ini /etc/php/8.2/apache2/conf.d/
-
-# Create the wp directory and set permissions
-RUN mkdir -p /usr/local/bin/wp/
-RUN chown -R www-data:www-data /usr/local/bin/wp/
-
-# Create the dev directory and set permissions
-RUN mkdir -p /var/www/dev/wp-content/uploads
-RUN chown -R www-data:www-data /var/www/dev
 
