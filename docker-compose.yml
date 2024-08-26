@@ -26,6 +26,11 @@ services:
     build:
       args:
         WP_VERSION: ${WP_VERSION:?have you copied .env.example to .env?}
+        WORDPRESS_DB_HOST: db-dev:3306
+        WORDPRESS_DB_PASSWORD: root
+        WORDPRESS_DB_USER: root
+        WORDPRESS_DB_NAME: wordpress
+        WORDPRESS_USER: root
       context: .
       dockerfile: web/Dockerfile
     networks:
@@ -35,19 +40,6 @@ services:
       MYSQL_ROOT_PASSWORD: root
       PMA_HOST: db-dev
       PMA_PORT: 3306
-      WORDPRESS_CONFIG_EXTRA: |
-        # Use dispatch port by default
-        if ('${CODESPACE_NAME:-}') {
-          define('WP_HOME', 'https://${CODESPACE_NAME:-}-8080.${GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN:-}');
-        } else {
-          define('WP_HOME', 'http://localhost:8080');
-          define('WP_SITEURL', 'http://localhost:8080');
-        }
-      WORDPRESS_DB_HOST: db-dev:3306
-      WORDPRESS_DB_PASSWORD: root
-      WORDPRESS_DB_USER: root
-      WORDPRESS_DB_NAME: wordpress
-      WORDPRESS_USER: root
     init: true
     ports:
       - '8080:80'

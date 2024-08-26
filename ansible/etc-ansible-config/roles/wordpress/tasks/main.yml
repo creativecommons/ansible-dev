@@ -133,3 +133,7 @@
     && mv /var/www/dev/wp-config.tmp /var/www/dev/wp-config.php
   args:
     chdir: /var/www/dev
+
+- name: Ensure that apache2 is started
+  become: true
+  service: name=apache2 state=started

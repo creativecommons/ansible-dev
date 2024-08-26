@@ -30,6 +30,18 @@ RUN apt-get install -y \
     openssh-server \
     && update-ca-certificates
 
+# Make sure that apache can get the environment variables we need
+ARG WORDPRESS_DB_HOST
+ARG WORDPRESS_DB_PASSWORD
+ARG WORDPRESS_DB_USER
+ARG WORDPRESS_DB_NAME
+ARG WORDPRESS_USER
+RUN echo "SetEnv WORDPRESS_DB_HOST ${WORDPRESS_DB_HOST}" >> /etc/apache2/conf-enabled/environment.conf
+RUN echo "SetEnv WORDPRESS_DB_PASSWORD ${WORDPRESS_DB_PASSWORD}" >> /etc/apache2/conf-enabled/environment.conf
+RUN echo "SetEnv WORDPRESS_DB_USER ${WORDPRESS_DB_USER}" >> /etc/apache2/conf-enabled/environment.conf
+RUN echo "SetEnv WORDPRESS_DB_NAME ${WORDPRESS_DB_NAME}" >> /etc/apache2/conf-enabled/environment.conf
+RUN echo "SetEnv WORDPRESS_USER ${WORDPRESS_USER}" >> /etc/apache2/conf-enabled/environment.conf
+
 # Clean up packages: Saves space by removing unnecessary package files and lists
 RUN apt-get clean
 RUN rm -rf /var/lib/apt/lists/*
@@ -50,10 +62,8 @@ RUN mkdir -p /home/sysadmin/.ssh && \
 # Create privilege separation directory for SSH
 RUN mkdir -p /run/sshd
 
-# Add Apache2 service startup script
-COPY ./web/startupservice.sh /startupservice.sh
-RUN chmod +x /startupservice.sh
-CMD ["sudo", "--preserve-env", "/startupservice.sh"]
+# Start SSH
+CMD ["/usr/sbin/sshd", "-D"]
 
 # Expose SSH port
 EXPOSE 22
