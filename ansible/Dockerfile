@@ -49,8 +49,14 @@ RUN mkdir /etc/ansible/
 WORKDIR /etc/ansible/
 
 # Set environment variables for Ansible
-ENV PATH="/opt/ansible-venv/bin:$PATH"
 ENV ANSIBLE_CONFIG=/etc/ansible/ansible.cfg
+ENV PATH="/opt/ansible-venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
+# Add commands to set environment variables in .bashrc
+RUN echo 'export ANSIBLE_CONFIG=/etc/ansible/ansible.cfg' >> /home/sysadmin/.bashrc
+RUN echo 'export PATH=/opt/ansible-venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin' >> /home/sysadmin/.bashrc
+RUN echo 'export LANG=en_US.UTF-8' >> /home/sysadmin/.bashrc
+RUN echo 'export LC_ALL=C.UTF-8' >> /home/sysadmin/.bashrc
 
 # Expose SSH port
 EXPOSE 22

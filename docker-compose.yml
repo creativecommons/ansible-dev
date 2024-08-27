@@ -10,6 +10,7 @@ services:
       - dev-backend
     volumes:
       - ./ansible/etc-ansible-config:/etc/ansible/
+      - ./web/etc-php-8.2-apache2-conf.d:/etc/ansible/web/etc-php-8.2-apache2-conf.d
       - ./sysadmin-ssh-keys/rsa_sysadmin:/home/sysadmin/.ssh/id_rsa:ro
       - ./sysadmin-ssh-keys/rsa_sysadmin.pub:/home/sysadmin/.ssh/id_rsa.pub:ro
       - ./sysadmin-ssh-keys/rsa_sysadmin.pub:/home/sysadmin/.ssh/authorized_keys:ro
@@ -25,6 +26,11 @@ services:
     build:
       args:
         WP_VERSION: ${WP_VERSION:?have you copied .env.example to .env?}
+        WORDPRESS_DB_HOST: db-dev:3306
+        WORDPRESS_DB_PASSWORD: root
+        WORDPRESS_DB_USER: root
+        WORDPRESS_DB_NAME: wordpress
+        WORDPRESS_USER: root
       context: .
       dockerfile: web/Dockerfile
     networks:
@@ -34,19 +40,6 @@ services:
       MYSQL_ROOT_PASSWORD: root
       PMA_HOST: db-dev
       PMA_PORT: 3306
-      WORDPRESS_CONFIG_EXTRA: |
-        # Use dispatch port by default
-        if ('${CODESPACE_NAME:-}') {
-          define('WP_HOME', 'https://${CODESPACE_NAME:-}-8080.${GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN:-}');
-        } else {
-          define('WP_HOME', 'http://localhost:8080');
-          define('WP_SITEURL', 'http://localhost:8080');
-        }
-      WORDPRESS_DB_HOST: db-dev:3306
-      WORDPRESS_DB_PASSWORD: root
-      WORDPRESS_DB_USER: root
-      WORDPRESS_DB_NAME: wordpress
-      WORDPRESS_USER: root
     init: true
     ports:
       - '8080:80'
